@@ -1,0 +1,84 @@
+package com.mycompany.dungeongame;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+
+public class CombatInterface extends JPanel {
+    private int playerHP;
+    private int enemyHP;
+
+    private final JLabel playerLabel = new JLabel();
+    private final JLabel enemyLabel = new JLabel();
+    private final JLabel messageLabel = new JLabel("", SwingConstants.CENTER);
+    private final JButton attackButton = new JButton("Attack");
+    private final JButton defendButton = new JButton("Defend");
+
+    public CombatInterface() {
+        setLayout(new BorderLayout(10, 10));
+
+        JPanel hpPanel = new JPanel(new GridLayout(1, 2));
+        hpPanel.add(playerLabel);
+        hpPanel.add(enemyLabel);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(attackButton);
+        buttonPanel.add(defendButton);
+
+        add(hpPanel, BorderLayout.NORTH);
+        add(messageLabel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        attackButton.addActionListener(e -> attack());
+        defendButton.addActionListener(e -> defend());
+        startBattle(100, 30);
+    }
+
+
+    public void startBattle(int playerHP, int enemyHP) {
+        if (playerHP <= 0 || enemyHP <= 0) {
+            throw new IllegalArgumentException("Starting HP must be positive.");
+        }
+        this.playerHP = playerHP;
+        this.enemyHP = enemyHP;
+        messageLabel.setText("Choose an action.");
+        attackButton.setEnabled(true);
+        defendButton.setEnabled(true);
+        updateLabels();
+    }
+
+    private void attack() {
+        enemyHP = Math.max(0, enemyHP - 10);
+        messageLabel.setText("You deal 10 damage.");
+
+        if (enemyHP > 0) {
+            playerHP = Math.max(0, playerHP - 5);
+            messageLabel.setText("You deal 10 damage. Enemy deals 5 damage.");
+        }
+        finishTurn();
+    }
+
+    private void defend() {
+        playerHP = Math.max(0, playerHP - 2);
+        messageLabel.setText("You defend. Enemy deals only 2 damage.");
+        finishTurn();
+    }
+
+    private void finishTurn() {
+        updateLabels();
+        if (enemyHP == 0 || playerHP == 0) {
+            messageLabel.setText(enemyHP == 0 ? "You win!" : "You lose!");
+            attackButton.setEnabled(false);
+            defendButton.setEnabled(false);
+        }
+    }
+
+    private void updateLabels() {
+        playerLabel.setText("Player HP: " + playerHP);
+        enemyLabel.setText("Enemy HP: " + enemyHP);
+    }
+}
