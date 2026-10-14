@@ -11,29 +11,38 @@ package com.mycompany.dungeongame;
  */
 
 import java.awt.CardLayout;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
 
 public class DungeonGame extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DungeonGame.class.getName());
-
+    static SaveData[] saves = new SaveData[4];
     /**
      * Creates new form DungeonGame
      */
     
+    CardLayout cards = new CardLayout();
+    GamePanel gamePanel;
+    
     public DungeonGame() {
         initComponents();
+        
         setLocationRelativeTo(null);
     }
     
     public void run() {
         this.setVisible(true);
-        CardLayout cards = (CardLayout) mainPanel.getLayout();
+        cards = (CardLayout) mainPanel.getLayout();
         cards.show(mainPanel, "GAME");
     }
-
-    public void combat(){
-        
-    }
     
+    public void changeCard(String name) {
+        cards.show(mainPanel, name);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,14 +53,31 @@ public class DungeonGame extends javax.swing.JFrame {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        CombatInterface = new javax.swing.JPanel();
-        GamePanel = new GamePanel();
+        CombatInterface = new CombatInterface();
+        GamePanel = new GamePanel(this);
+        gamePanel = (GamePanel) GamePanel;
+        MenuPanel = new javax.swing.JPanel();
+        saveGame = new javax.swing.JButton();
+        restart = new javax.swing.JButton();
+        exitMenu = new javax.swing.JButton();
+        exitGame = new javax.swing.JButton();
+        loadGame = new javax.swing.JButton();
+        saveSelect = new javax.swing.JComboBox<>();
+        saveSelect.setVisible(false);
+        selectSave = new javax.swing.JLabel();
+        selectSave.setVisible(false);
+        jLabel1 = new javax.swing.JLabel();
+        jLabel1.setVisible(false);
+        saveSelect1 = new javax.swing.JComboBox<>();
+        saveSelect1.setVisible(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
 
         mainPanel.setBackground(new java.awt.Color(0, 0, 0));
         mainPanel.setLayout(new java.awt.CardLayout());
+
+        CombatInterface.setBackground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout CombatInterfaceLayout = new javax.swing.GroupLayout(CombatInterface);
         CombatInterface.setLayout(CombatInterfaceLayout);
@@ -82,6 +108,90 @@ public class DungeonGame extends javax.swing.JFrame {
 
         mainPanel.add(GamePanel, "GAME");
 
+        MenuPanel.setBackground(new java.awt.Color(102, 102, 102));
+        MenuPanel.setForeground(new java.awt.Color(102, 102, 102));
+
+        saveGame.setText("Save Game");
+        saveGame.addActionListener(this::saveGameActionPerformed);
+
+        restart.setText("Restart");
+
+        exitMenu.setText("Exit Menu");
+        exitMenu.addActionListener(this::exitMenuActionPerformed);
+
+        exitGame.setText("Exit Game");
+        exitGame.addActionListener(this::exitGameActionPerformed);
+
+        loadGame.setText("Load Game");
+        loadGame.addActionListener(this::loadGameActionPerformed);
+
+        saveSelect.setBackground(new java.awt.Color(204, 204, 204));
+        saveSelect.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Save 1", "Save 2", "Save 3", "Save 4" }));
+        saveSelect.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        saveSelect.addActionListener(this::saveSelectActionPerformed);
+
+        selectSave.setForeground(new java.awt.Color(255, 255, 255));
+        selectSave.setText("Select Save");
+
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Select Save");
+
+        saveSelect1.setBackground(new java.awt.Color(204, 204, 204));
+        saveSelect1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Save 1", "Save 2", "Save 3", "Save 4" }));
+        saveSelect1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        saveSelect1.addActionListener(this::saveSelect1ActionPerformed);
+
+        javax.swing.GroupLayout MenuPanelLayout = new javax.swing.GroupLayout(MenuPanel);
+        MenuPanel.setLayout(MenuPanelLayout);
+        MenuPanelLayout.setHorizontalGroup(
+            MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MenuPanelLayout.createSequentialGroup()
+                .addGap(338, 338, 338)
+                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(restart, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(saveGame, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(exitMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(loadGame, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
+                            .addComponent(exitGame, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(saveSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(selectSave, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(saveSelect1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(229, Short.MAX_VALUE))
+        );
+        MenuPanelLayout.setVerticalGroup(
+            MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MenuPanelLayout.createSequentialGroup()
+                .addGap(77, 77, 77)
+                .addComponent(restart, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(107, 107, 107)
+                        .addComponent(selectSave, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(MenuPanelLayout.createSequentialGroup()
+                        .addGroup(MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(saveGame, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(saveSelect1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(loadGame, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exitMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exitGame, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(287, Short.MAX_VALUE))
+        );
+
+        mainPanel.add(MenuPanel, "MENU");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,33 +200,85 @@ public class DungeonGame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 853, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void saveGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGameActionPerformed
+        jLabel1.setVisible(true);
+        saveSelect1.setVisible(true);
+    }//GEN-LAST:event_saveGameActionPerformed
+
+    private void exitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuActionPerformed
+        changeCard("GAME");
+        gamePanel.requestFocusInWindow();
+    }//GEN-LAST:event_exitMenuActionPerformed
+
+    private void exitGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitGameActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_exitGameActionPerformed
+
+    private void saveSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveSelectActionPerformed
+        String selected = (String) saveSelect.getSelectedItem();
+            try (ObjectInputStream in =
+                new ObjectInputStream(
+                    new FileInputStream("savegame.dat"))) {
+
+        saves[(Integer.parseInt(selected.substring(5, 6))) - 1] = (SaveData) in.readObject();
+        SaveData data = saves[(Integer.parseInt(selected.substring(5, 6))) - 1];
+
+        gamePanel.playerX = data.playerX;
+        gamePanel.playerY = data.playerY;
+        gamePanel.playerHP = data.playerHP;
+        gamePanel.enemyX = data.enemyX;
+        gamePanel.enemyY = data.enemyY;
+        gamePanel.obstacles = data.obstacles;
+        
+        cards.show(mainPanel, "GAME");
+        gamePanel.repaint();
+        gamePanel.requestFocusInWindow();
+        System.out.println("Game loaded!");
+
+    } catch (IOException | ClassNotFoundException e) {
+        System.out.println("Could not load game.");
+        e.printStackTrace();
+    }
+    }//GEN-LAST:event_saveSelectActionPerformed
+
+    private void loadGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameActionPerformed
+        saveSelect.setVisible(true);
+        selectSave.setVisible(true);
+    }//GEN-LAST:event_loadGameActionPerformed
+
+    private void saveSelect1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveSelect1ActionPerformed
+
+        String selected = (String) saveSelect.getSelectedItem();
+        System.out.println(selected);
+        saves[Integer.parseInt(selected.substring(5, 6)) - 1] = new SaveData(gamePanel.playerX,
+        gamePanel.playerY, gamePanel.playerHP, gamePanel.enemyX, 
+        gamePanel.enemyY, gamePanel.obstacles);
+        try (ObjectOutputStream out =
+            new ObjectOutputStream(
+                new FileOutputStream("savegame.dat"))) {
+
+            out.writeObject(saves[Integer.parseInt(selected.substring(5)) -  1]);
+            System.out.println("Game saved!");
+
+        } catch (IOException e) {
+            System.out.println("Could not save game.");
+            e.printStackTrace();
+        }
+        
+    }//GEN-LAST:event_saveSelect1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new DungeonGame().setVisible(true));
         DungeonGame game = new DungeonGame();
@@ -127,7 +289,17 @@ public class DungeonGame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel CombatInterface;
     private javax.swing.JPanel GamePanel;
+    private javax.swing.JPanel MenuPanel;
+    private javax.swing.JButton exitGame;
+    private javax.swing.JButton exitMenu;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton loadGame;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JButton restart;
+    private javax.swing.JButton saveGame;
+    private javax.swing.JComboBox<String> saveSelect;
+    private javax.swing.JComboBox<String> saveSelect1;
+    private javax.swing.JLabel selectSave;
     // End of variables declaration//GEN-END:variables
 }
 
