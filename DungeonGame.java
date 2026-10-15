@@ -29,8 +29,13 @@ public class DungeonGame extends javax.swing.JFrame {
     
     public DungeonGame() {
         initComponents();
-        
         setLocationRelativeTo(null);
+        mainPanel.remove(CombatInterface);
+        CombatInterface = new com.mycompany.dungeongame.CombatInterface();
+        mainPanel.add(CombatInterface, "COMBAT");
+
+        setLocationRelativeTo(null);
+
     }
     
     public void run() {
@@ -87,7 +92,7 @@ public class DungeonGame extends javax.swing.JFrame {
         );
         CombatInterfaceLayout.setVerticalGroup(
             CombatInterfaceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 853, Short.MAX_VALUE)
+            .addGap(0, 700, Short.MAX_VALUE)
         );
 
         mainPanel.add(CombatInterface, "COMBAT");
@@ -103,7 +108,7 @@ public class DungeonGame extends javax.swing.JFrame {
         );
         GamePanelLayout.setVerticalGroup(
             GamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 853, Short.MAX_VALUE)
+            .addGap(0, 700, Short.MAX_VALUE)
         );
 
         mainPanel.add(GamePanel, "GAME");
@@ -111,17 +116,22 @@ public class DungeonGame extends javax.swing.JFrame {
         MenuPanel.setBackground(new java.awt.Color(102, 102, 102));
         MenuPanel.setForeground(new java.awt.Color(102, 102, 102));
 
+        saveGame.setBackground(new java.awt.Color(204, 204, 204));
         saveGame.setText("Save Game");
         saveGame.addActionListener(this::saveGameActionPerformed);
 
+        restart.setBackground(new java.awt.Color(204, 204, 204));
         restart.setText("Restart");
 
+        exitMenu.setBackground(new java.awt.Color(204, 204, 204));
         exitMenu.setText("Exit Menu");
         exitMenu.addActionListener(this::exitMenuActionPerformed);
 
+        exitGame.setBackground(new java.awt.Color(204, 204, 204));
         exitGame.setText("Exit Game");
         exitGame.addActionListener(this::exitGameActionPerformed);
 
+        loadGame.setBackground(new java.awt.Color(204, 204, 204));
         loadGame.setText("Load Game");
         loadGame.addActionListener(this::loadGameActionPerformed);
 
@@ -187,7 +197,7 @@ public class DungeonGame extends javax.swing.JFrame {
                 .addComponent(exitMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(exitGame, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
 
         mainPanel.add(MenuPanel, "MENU");
@@ -200,7 +210,7 @@ public class DungeonGame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
