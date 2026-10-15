@@ -6,6 +6,10 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
+
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -17,34 +21,40 @@ import java.awt.event.KeyListener;
  * @author Tejas Pahuja
  */
 public class GamePanel extends JPanel implements KeyListener {
+    DungeonGame game;
 
-    private int playerX = 100;
-    private int playerY = 100;
-    private int playerHP = 10; // placeholder
-    private int enemyX = 500;
-    private int enemyY = 500;
-    private Rectangle[] obstacles = {
-        new Rectangle(0, 0, 10, 853),
-        new Rectangle(0, 843, 883, 10),
-        new Rectangle(873, 0, 10, 853),
+    int playerX = 100;
+    int playerY = 100;
+    int playerHP = 10; // placeholder
+    int enemyX = 500;
+    int enemyY = 500;
+    Rectangle[] obstacles = {
+        new Rectangle(0, 0, 10, 700),
+        new Rectangle(0, 690, 883, 10),
+        new Rectangle(873, 0, 10, 700),
         new Rectangle(0, 0, 883, 10),
         new Rectangle(300, 200, 100, 50), // placeholder
         new Rectangle(500, 100, 50, 150),
         new Rectangle(150, 350, 200, 40)
     };
-    private Rectangle[] traps = {
+    Rectangle[] traps = {
         new Rectangle(100, 200, 50, 50) // placeholder
     };
-    private boolean[] trapActive = new boolean[traps.length];
-    private boolean battleOver;
+    boolean[] trapActive = new boolean[traps.length];
+    boolean battleOver;
        
-    public GamePanel() {
+    public GamePanel(DungeonGame game) {
+        this.game = game;
         for (boolean trap : trapActive) {
             trap = true;
         }
         setFocusable(true);
         addKeyListener(this);
         this.setBackground(new Color(102, 102, 102));
+    }
+    
+    public void generateDungeon() {
+        
     }
     
     @Override
@@ -65,20 +75,20 @@ public class GamePanel extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int newX = playerX;
         int newY = playerY;
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            game.changeCard("MENU");
+        }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            newX -= 5;
+            newX -= 10;
         }
-
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) { 
-            newX += 5;
+            newX += 10;
         }
-
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            newY -= 5;
+            newY -= 10;
         }
-
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            newY += 5;
+            newY += 10;
         }
         if (!collisionCheck(newX, newY)) {
             playerX = newX;
@@ -102,7 +112,7 @@ public class GamePanel extends JPanel implements KeyListener {
         Rectangle player = new Rectangle(x, y, 50, 50);
         Rectangle enemy = new Rectangle(enemyX, enemyY, 50, 50);
         if (player.intersects(enemy)) {
-            startBattle();
+            game.changeCard("COMBAT");
         }
     }
     
@@ -111,17 +121,12 @@ public class GamePanel extends JPanel implements KeyListener {
         int i = 0;
         for (Rectangle trap : traps) {
             if (player.intersects(trap) && trapActive[i]) {
-                playerHP -= 5;
-                
+                playerHP -= 5;                
             }
             i++;
         }
     }
-    
-    public void startBattle() { // placeholder
-        System.out.println("Battle");
-    }
-        
+                
     @Override
     public void keyReleased(KeyEvent e) {
         
