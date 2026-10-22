@@ -27,6 +27,7 @@ public class DungeonGame extends javax.swing.JFrame {
     CardLayout cards = new CardLayout();
     GamePanel gamePanel;
     static int roomCount;
+    static int playerHP = 100;
     
     public DungeonGame() {
         initComponents();
@@ -283,7 +284,7 @@ public class DungeonGame extends javax.swing.JFrame {
         roomCount = data.roomCount;
         gamePanel.playerX = data.playerX;
         gamePanel.playerY = data.playerY;
-        gamePanel.playerHP = data.playerHP;
+        playerHP = data.playerHP;
         gamePanel.enemyX = data.enemyX;
         gamePanel.enemyY = data.enemyY;
         gamePanel.obstacles = data.obstacles;
@@ -309,7 +310,7 @@ public class DungeonGame extends javax.swing.JFrame {
         String selected = (String) saveSelect.getSelectedItem();
         System.out.println(selected);
         saves[Integer.parseInt(selected.substring(5, 6)) - 1] = new SaveData(gamePanel.playerX,
-        gamePanel.playerY, gamePanel.playerHP, gamePanel.enemyX, 
+        gamePanel.playerY, playerHP, gamePanel.enemyX, 
         gamePanel.enemyY, gamePanel.obstacles, roomCount);
         try (ObjectOutputStream out =
             new ObjectOutputStream(
