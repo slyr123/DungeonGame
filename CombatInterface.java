@@ -1,0 +1,138 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.dungeongame;
+
+import javax.swing.ImageIcon;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+
+public class CombatInterface extends JPanel {
+    private int playerHP;
+    private int enemyHP;
+    
+    DungeonGame game;
+
+    private final JLabel playerLabel = new JLabel();
+    private final JLabel enemyLabel = new JLabel();
+    private final JLabel messageLabel = new JLabel("", SwingConstants.CENTER);
+    private final JButton attackButton = new JButton("Attack");
+    private final JButton parryButton = new JButton("Parry");
+
+    public CombatInterface(DungeonGame game) {
+        setLayout(new BorderLayout(10, 10));
+        this.game = game;
+
+        JPanel hpPanel = new JPanel(new GridLayout(1, 2));
+        hpPanel.add(playerLabel);
+        hpPanel.add(enemyLabel);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(attackButton);
+        buttonPanel.add(parryButton);
+
+        add(hpPanel, BorderLayout.NORTH);
+        
+
+        ImageIcon playerIcon = new ImageIcon(
+            CombatInterface.class.getResource("/images/player.png"));
+
+        ImageIcon enemyIcon = new ImageIcon(
+            CombatInterface.class.getResource("/images/enemy.png"));
+
+        JLabel playerModel = new JLabel(new ImageIcon(
+            playerIcon.getImage().getScaledInstance(
+                    150, 150, java.awt.Image.SCALE_SMOOTH)));
+
+        JLabel enemyModel = new JLabel(new ImageIcon(
+            enemyIcon.getImage().getScaledInstance(
+                    150, 150, java.awt.Image.SCALE_SMOOTH)));
+
+
+        JPanel modelsPanel = new JPanel(new GridLayout(1, 2));
+        modelsPanel.add(playerModel);
+        modelsPanel.add(enemyModel);
+
+        playerModel.setHorizontalAlignment(SwingConstants.CENTER);
+        enemyModel.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(modelsPanel, BorderLayout.CENTER);
+        centerPanel.add(messageLabel, BorderLayout.SOUTH);
+
+        add(centerPanel, BorderLayout.CENTER);
+        
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        attackButton.addActionListener(e -> attack());
+        parryButton.addActionListener(e -> parry());
+        startBattle(100, 70);
+    }
+
+
+    public void startBattle(int playerHP, int enemyHP) {
+        if(playerHP <= 0 || enemyHP <= 0) {
+            throw new IllegalArgumentException("Starting HP must be positive.");
+        }
+        this.playerHP = playerHP;
+        this.enemyHP = enemyHP;
+        messageLabel.setText("Choose an action.");
+        attackButton.setEnabled(true);
+        parryButton.setEnabled(true);
+        updateLabels();
+    }
+
+    public void attack() {
+        enemyHP = Math.max(0, enemyHP - 10);
+        messageLabel.setText("You deal 10 damage.");
+
+        
+        if (enemyHP > 0) {
+            playerHP = Math.max(0, playerHP - 5);
+            messageLabel.setText("You deal 10 damage. Enemy deals 5 damage.");
+        }
+        finishTurn();
+    }
+
+    private void parry() {
+        if (Math.random() < 0.5) {
+            enemyHP = Math.max(0, enemyHP - 20);
+            messageLabel.setText("Parry successful! You deal 20 damage.");
+        } else {
+            playerHP = Math.max(0, playerHP - 30);
+            messageLabel.setText("Parry failed! You take 30 damage.");
+        }
+        finishTurn();
+    }
+
+    public void finishTurn() {
+        updateLabels();
+        if (enemyHP == 0) {
+            messageLabel.setText("You Win!");
+            attackButton.setEnabled(false);
+            parryButton.setEnabled(false);
+            if (game.roomCount < 5) {
+                DungeonGame newGame = new DungeonGame();
+                newGame.run();
+            }
+            else {
+                messageLabel.setText("You Win!");
+            }
+        }
+        else if (playerHP == 0) {
+            messageLabel.setText("You lose!");
+        }
+    }
+
+    public void updateLabels() {
+        playerLabel.setText("Player HP: " + playerHP);
+        enemyLabel.setText("Enemy HP: " + enemyHP);
+    }
+}
