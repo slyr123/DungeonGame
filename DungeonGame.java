@@ -312,4 +312,3 @@ public class DungeonGame extends javax.swing.JFrame {
     private javax.swing.JLabel selectSave;
     // End of variables declaration//GEN-END:variables
 }
-
