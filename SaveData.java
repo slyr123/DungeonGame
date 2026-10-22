@@ -20,9 +20,10 @@ public class SaveData implements Serializable {
     public int enemyX;
     public int enemyY;
     public Rectangle obstacles[];
+    public int roomCount;
 
     public SaveData(int playerX, int playerY, int playerHP, int enemyX,
-        int enemyY, Rectangle[] obstacles) {
+        int enemyY, Rectangle[] obstacles, int roomCount) {
         this.playerX = playerX;
         this.playerY = playerY;
         this.playerHP = playerHP;
@@ -30,7 +31,7 @@ public class SaveData implements Serializable {
         this.enemyY = enemyY;
         for (int i = 0; i < obstacles.length; i++) {
             this.obstacles = obstacles;
+        this.roomCount = roomCount;
         }
     }
 }
-
