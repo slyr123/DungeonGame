@@ -73,7 +73,7 @@ public class CombatInterface extends JPanel {
 
         attackButton.addActionListener(e -> attack());
         parryButton.addActionListener(e -> parry());
-        startBattle(100, 70);
+        startBattle(DungeonGame.playerHP, 70);
     }
 
 
@@ -118,7 +118,8 @@ public class CombatInterface extends JPanel {
             messageLabel.setText("You Win!");
             attackButton.setEnabled(false);
             parryButton.setEnabled(false);
-            if (game.roomCount < 5) {
+            if (DungeonGame.roomCount < 3) {
+                DungeonGame.playerHP = playerHP;
                 DungeonGame newGame = new DungeonGame();
                 newGame.run();
             }
@@ -128,7 +129,7 @@ public class CombatInterface extends JPanel {
         }
         else if (playerHP == 0) {
             messageLabel.setText("You lose!");
-        }
+        }  
     }
 
     public void updateLabels() {
