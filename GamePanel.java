@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import java.util.Random;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.ImageIcon;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -32,6 +33,12 @@ public class GamePanel extends JPanel implements KeyListener {
             
     
     boolean battleOver;
+    
+    private final ImageIcon playerImage =
+        new ImageIcon(GamePanel.class.getResource("/images/player.png"));
+
+    private final ImageIcon enemyImage =
+        new ImageIcon(GamePanel.class.getResource("/images/enemy.png"));
        
     public GamePanel(DungeonGame game) {
         this.game = game;
@@ -110,14 +117,14 @@ public class GamePanel extends JPanel implements KeyListener {
 
         g.setColor(Color.BLACK);
         for (Rectangle obstacle : obstacles) {
-            if(obstacle != obstacles[4]) {
+            if (obstacle != obstacles[4] && obstacle != obstacles[5]) {
                 g.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             }
         }
-        g.setColor(Color.BLUE);
-        g.fillRect(playerX, playerY, 50, 50);
-        g.setColor(Color.RED);
-        g.fillRect(enemyX, enemyY, 50, 50);
+        g.drawImage(playerImage.getImage(), playerX, playerY, 50, 50, this);
+        g.drawImage(enemyImage.getImage(), enemyX, enemyY, 50, 50, this);
+        
+        
     }
     
     @Override
