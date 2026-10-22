@@ -1,5 +1,6 @@
 package com.mycompany.dungeongame;
 
+import javax.swing.ImageIcon;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.JButton;
@@ -16,7 +17,7 @@ public class CombatInterface extends JPanel {
     private final JLabel enemyLabel = new JLabel();
     private final JLabel messageLabel = new JLabel("", SwingConstants.CENTER);
     private final JButton attackButton = new JButton("Attack");
-    private final JButton defendButton = new JButton("Defend");
+    private final JButton parryButton = new JButton("Parry");
 
     public CombatInterface() {
         setLayout(new BorderLayout(10, 10));
@@ -27,34 +28,65 @@ public class CombatInterface extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(attackButton);
-        buttonPanel.add(defendButton);
+        buttonPanel.add(parryButton);
 
         add(hpPanel, BorderLayout.NORTH);
-        add(messageLabel, BorderLayout.CENTER);
+        
+
+        ImageIcon playerIcon = new ImageIcon(
+            CombatInterface.class.getResource("/images/player.png"));
+
+        ImageIcon enemyIcon = new ImageIcon(
+            CombatInterface.class.getResource("/images/enemy.png"));
+
+        JLabel playerModel = new JLabel(new ImageIcon(
+            playerIcon.getImage().getScaledInstance(
+                    150, 150, java.awt.Image.SCALE_SMOOTH)));
+
+        JLabel enemyModel = new JLabel(new ImageIcon(
+            enemyIcon.getImage().getScaledInstance(
+                    150, 150, java.awt.Image.SCALE_SMOOTH)));
+
+
+        JPanel modelsPanel = new JPanel(new GridLayout(1, 2));
+        modelsPanel.add(playerModel);
+        modelsPanel.add(enemyModel);
+
+        playerModel.setHorizontalAlignment(SwingConstants.CENTER);
+        enemyModel.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(modelsPanel, BorderLayout.CENTER);
+        centerPanel.add(messageLabel, BorderLayout.SOUTH);
+
+        add(centerPanel, BorderLayout.CENTER);
+        
         add(buttonPanel, BorderLayout.SOUTH);
 
         attackButton.addActionListener(e -> attack());
-        defendButton.addActionListener(e -> defend());
-        startBattle(100, 30);
+        parryButton.addActionListener(e -> parry());
+        startBattle(100, 70);
     }
 
 
     public void startBattle(int playerHP, int enemyHP) {
-        if (playerHP <= 0 || enemyHP <= 0) {
+        if(playerHP <= 0 || enemyHP <= 0) {
             throw new IllegalArgumentException("Starting HP must be positive.");
         }
         this.playerHP = playerHP;
         this.enemyHP = enemyHP;
         messageLabel.setText("Choose an action.");
         attackButton.setEnabled(true);
-        defendButton.setEnabled(true);
+        parryButton.setEnabled(true);
         updateLabels();
     }
 
-    private void attack() {
+    public void attack() {
         enemyHP = Math.max(0, enemyHP - 10);
         messageLabel.setText("You deal 10 damage.");
 
+        
         if (enemyHP > 0) {
             playerHP = Math.max(0, playerHP - 5);
             messageLabel.setText("You deal 10 damage. Enemy deals 5 damage.");
@@ -62,22 +94,32 @@ public class CombatInterface extends JPanel {
         finishTurn();
     }
 
-    private void defend() {
-        playerHP = Math.max(0, playerHP - 2);
-        messageLabel.setText("You defend. Enemy deals only 2 damage.");
+    private void parry() {
+        if (Math.random() < 0.5) {
+            enemyHP = Math.max(0, enemyHP - 20);
+            messageLabel.setText("Parry successful! You deal 20 damage.");
+        } else {
+            playerHP = Math.max(0, playerHP - 30);
+            messageLabel.setText("Parry failed! You take 30 damage.");
+        }
         finishTurn();
     }
 
-    private void finishTurn() {
+    public void finishTurn() {
         updateLabels();
         if (enemyHP == 0 || playerHP == 0) {
-            messageLabel.setText(enemyHP == 0 ? "You win!" : "You lose!");
+            
+            if (enemyHP == 0) {
+                messageLabel.setText("You win!");
+            } else {
+             messageLabel.setText("You lose!");
+            }            
             attackButton.setEnabled(false);
-            defendButton.setEnabled(false);
+            parryButton.setEnabled(false);
         }
     }
 
-    private void updateLabels() {
+    public void updateLabels() {
         playerLabel.setText("Player HP: " + playerHP);
         enemyLabel.setText("Enemy HP: " + enemyHP);
     }
