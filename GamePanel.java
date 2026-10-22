@@ -97,7 +97,6 @@ public class GamePanel extends JPanel implements KeyListener {
                 prevPath.add(testPlayer.x + "," + testPlayer.y);
                 testPlayer.x = newX;
                 testPlayer.y = newY;
-                System.out.println(newX+" "+newY);
                 if (checkPath()) {
                     return true;
                 }
