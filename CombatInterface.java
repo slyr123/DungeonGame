@@ -129,6 +129,7 @@ public class CombatInterface extends JPanel {
         }
         else if (playerHP == 0) {
             messageLabel.setText("You lose!");
+            game.changeCard("LOSE");
         }  
     }
 
