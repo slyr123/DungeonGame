@@ -4,10 +4,7 @@
  */
 package com.mycompany.dungeongame;
 
-/**
- *
- * @author Tejas Pahuja
- */
+
 import java.io.Serializable;
 import java.awt.Rectangle;
 
@@ -29,9 +26,8 @@ public class SaveData implements Serializable {
         this.playerHP = playerHP;
         this.enemyX = enemyX;
         this.enemyY = enemyY;
-        for (int i = 0; i < obstacles.length; i++) {
-            this.obstacles = obstacles;
+        this.obstacles = obstacles;
         this.roomCount = roomCount;
-        }
     }
 }
+
