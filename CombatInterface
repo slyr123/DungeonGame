@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.mycompany.dungeongame;
 
 import javax.swing.ImageIcon;
@@ -12,6 +16,8 @@ import javax.swing.SwingConstants;
 public class CombatInterface extends JPanel {
     private int playerHP;
     private int enemyHP;
+    
+    DungeonGame game;
 
     private final JLabel playerLabel = new JLabel();
     private final JLabel enemyLabel = new JLabel();
@@ -19,8 +25,9 @@ public class CombatInterface extends JPanel {
     private final JButton attackButton = new JButton("Attack");
     private final JButton parryButton = new JButton("Parry");
 
-    public CombatInterface() {
+    public CombatInterface(DungeonGame game) {
         setLayout(new BorderLayout(10, 10));
+        this.game = game;
 
         JPanel hpPanel = new JPanel(new GridLayout(1, 2));
         hpPanel.add(playerLabel);
@@ -66,7 +73,7 @@ public class CombatInterface extends JPanel {
 
         attackButton.addActionListener(e -> attack());
         parryButton.addActionListener(e -> parry());
-        startBattle(100, 70);
+        startBattle(DungeonGame.playerHP, 70);
     }
 
 
@@ -107,20 +114,22 @@ public class CombatInterface extends JPanel {
 
     public void finishTurn() {
         updateLabels();
-        if (enemyHP == 0 || playerHP == 0) {
-            
-            if (enemyHP == 0) {
-                messageLabel.setText("You win!");
-            } else {
-             messageLabel.setText("You lose!");
-            }            
+        if (enemyHP == 0) {
+            messageLabel.setText("You Win!");
             attackButton.setEnabled(false);
             parryButton.setEnabled(false);
+            if (DungeonGame.roomCount < 3) {
+                DungeonGame.playerHP = playerHP;
+                DungeonGame newGame = new DungeonGame();
+                newGame.run();
+            }
+            else {
+                messageLabel.setText("You Win!");
+            }
         }
+        else if (playerHP == 0) {
+            messageLabel.setText("You lose!");
+            game.changeCard("LOSE");
+        }  
     }
 
-    public void updateLabels() {
-        playerLabel.setText("Player HP: " + playerHP);
-        enemyLabel.setText("Enemy HP: " + enemyHP);
-    }
-}
