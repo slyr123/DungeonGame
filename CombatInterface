@@ -114,10 +114,11 @@ public class CombatInterface extends JPanel {
             messageLabel.setText("You Win!");
             attackButton.setEnabled(false);
             parryButton.setEnabled(false);
-            if (DungeonGame.roomCount < 3) {
+            if (DungeonGame.roomCount < 2) {
                 DungeonGame.playerHP = playerHP;
                 DungeonGame newGame = new DungeonGame();
                 newGame.run();
+                DungeonGame.roomCount++;
             }
             else {
                 messageLabel.setText("You Win!");
