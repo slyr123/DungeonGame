@@ -41,6 +41,7 @@ public class GamePanel extends JPanel implements KeyListener {
         new ImageIcon(GamePanel.class.getResource("/images/enemy.png"));
        
     public GamePanel(DungeonGame game) {
+        System.out.println("A new GamePanel was created");
         this.game = game;
         setFocusable(true);
         addKeyListener(this);
